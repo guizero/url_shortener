@@ -1,3 +1,5 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  scope module: :short_urls, action: :call do
+    get  "/:short_code", controller: "redirect"
+  end
 end
