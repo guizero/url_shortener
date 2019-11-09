@@ -5,24 +5,38 @@ class ShortCode
   BASE = ALPHABET.length
 
   def self.encode(int)
-		str = ""
+    str = ''
 
-		while int > 0 do
-			str = ALPHABET[int % BASE] + str
-			int /= BASE
-		end
+    while int > 0
+      str = ALPHABET[int % BASE] + str
+      int /= BASE
+    end
 
-		str
-	end
+    str
+  end
 
-	def self.decode(str)
-		int = x = 0
+  def self.decode(str)
+    int = x = 0
 
-		while x < str.length do
-			int = int * BASE + ALPHABET.index(str[x])
-			x += 1
-		end
+    while x < str.length
+      int = int * BASE + ALPHABET.index(str[x])
+      x += 1
+    end
 
-		int
-	end
+    int
+  end
+
+  def self.valid?(str)
+    return false unless str.is_a?(String)
+    return false unless valid_characters(str)
+
+    true
+  end
+
+  private
+
+  def self.valid_characters(str)
+    intersection = ALPHABET.split('') & str.split('')
+    intersection.length == str.length
+  end
 end

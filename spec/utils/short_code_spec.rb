@@ -19,4 +19,14 @@ RSpec.describe ShortCode, type: :utils do
       it_behaves_like 'a correct encoding / decoding', rand(1000000000)
     end
   end
+
+  describe '.valid?' do
+    let(:invalid_type) { 2 }
+    let(:invalid_chars) { '12345b'}
+    let(:valid_string) {'2345b'}
+
+    it { expect(described_class.valid?(invalid_type)).to be false }
+    it { expect(described_class.valid?(invalid_chars)).to be false }
+    it { expect(described_class.valid?(valid_string)).to be true }
+  end
 end

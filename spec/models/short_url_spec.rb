@@ -41,13 +41,28 @@ RSpec.describe ShortUrl, type: :model do
     end
   end
 
+  describe '.find_from_code' do
+    let(:short_url) { ShortUrl.create(long_url: 'https://www.bluecoding.com') }
+    let(:code) { ShortCode.encode(short_url.id) }
+
+    subject { described_class.find_from_code(code) }
+
+    it { is_expected.to eq short_url }
+
+    context 'code is invalid' do
+      before { allow(ShortCode).to receive(:valid?).and_return(false) }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#short_id' do
     let(:long_url) { 'https://www.bluecoding.com' }
     let(:short_url) { described_class.create(long_url: long_url) }
 
     subject { short_url.short_id }
 
-    it 'calls the hash_encoder utils' do
+    it 'calls the short url utils' do
       expect(ShortCode)
         .to receive(:encode)
         .with(short_url.id)
