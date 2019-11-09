@@ -1,0 +1,55 @@
+AllCops:
+  TargetRubyVersion: 2.4
+  Exclude:
+    - 'db/schema.rb'
+
+Style/Documentation:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/EmptyLineAfterMagicComment:
+  Enabled: false
+
+Style/FormatStringToken:
+  Enabled: false
+
+Style/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    default: '()'
+    '%w':    '()'
+    '%i':    '()'
+
+Style/RegexpLiteral:
+  Enabled: false
+
+Style/AlignParameters:
+  EnforcedStyle: with_fixed_indentation
+
+Style/SpaceBeforeFirstArg:
+  Include:
+    - db/migrate/*.rb
+  Enabled: false
+
+Style/Lambda:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 90
+
+Metrics/MethodLength:
+  Max: 15
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Style/NonNilCheck:
+  Enabled: false
+
+Bundler/OrderedGems:
+  Enabled: false
