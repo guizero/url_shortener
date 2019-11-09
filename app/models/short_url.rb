@@ -4,6 +4,10 @@ class ShortUrl < ApplicationRecord
   validates :long_url, presence: true, length: { in: 5..2000 }
   validate :long_url_must_be_valid
 
+  def short_id
+    ShortCode.encode(id)
+  end
+
   private
 
   def long_url_must_be_valid

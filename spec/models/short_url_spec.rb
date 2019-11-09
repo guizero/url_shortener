@@ -7,7 +7,7 @@ RSpec.describe ShortUrl, type: :model do
     it { should validate_presence_of(:long_url) }
     it { should validate_length_of(:long_url).is_at_least(5).is_at_most(2000) }
 
-    describe '.long_url_must_be_valid' do
+    describe 'long_url_must_be_valid' do
       shared_examples 'an invalid long_url' do |long_url|
         let(:short_url) { described_class.new(long_url: long_url) }
 
@@ -38,6 +38,22 @@ RSpec.describe ShortUrl, type: :model do
         it_behaves_like 'an invalid long_url', 'file:///home/bluecoding/tmp'
         it_behaves_like 'an invalid long_url', 'ftp://bluecoding.com/linux/debian'
       end
+    end
+  end
+
+  describe '#short_id' do
+    let(:long_url) { 'https://www.bluecoding.com' }
+    let(:short_url) { described_class.create(long_url: long_url) }
+
+    subject { short_url.short_id }
+
+    it 'calls the hash_encoder utils' do
+      expect(ShortCode)
+        .to receive(:encode)
+        .with(short_url.id)
+        .once
+
+      subject
     end
   end
 end
