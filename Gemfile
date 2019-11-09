@@ -21,11 +21,15 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem "pry-rails",   "~> 0.3"
-  gem "rspec-rails", "~> 3.8"
 end
 
 group :test do
   gem "database_cleaner", "~> 1.7"
+end
+
+group :development, :test do
+  gem "rspec-rails", "~> 3.8"
+  gem 'shoulda-matchers'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

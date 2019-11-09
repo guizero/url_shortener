@@ -1,54 +1,63 @@
-version: '2'
+version: "2"
 
 services:
   postgres:
-    image: 'postgres:10.3-alpine'
+    image: "postgres:10.3-alpine"
     volumes:
-      - 'postgres:/var/lib/postgresql/data'
+      - "postgres:/var/lib/postgresql/data"
     env_file:
-      - '.env'
+      - ".env"
 
   redis:
-    image: 'redis:4.0-alpine'
+    image: "redis:4.0-alpine"
     command: redis-server --requirepass yourpassword
     volumes:
-      - 'redis:/data'
+      - "redis:/data"
 
   website:
     depends_on:
-      - 'postgres'
-      - 'redis'
+      - "postgres"
+      - "redis"
     build: .
     ports:
-      - '3000:3000'
+      - "3000:3000"
     volumes:
-      - '.:/app'
+      - ".:/app"
+      - bundle_cache:/bundle_cache
     env_file:
-      - '.env'
+      - ".env"
+    environment:
+      - BUNDLE_PATH=/bundle_cache
 
   sidekiq:
     depends_on:
-      - 'postgres'
-      - 'redis'
+      - "postgres"
+      - "redis"
     build: .
     command: sidekiq -C config/sidekiq.yml.erb
     volumes:
-      - '.:/app'
+      - ".:/app"
     env_file:
-      - '.env'
+      - ".env"
 
   cable:
     depends_on:
-      - 'redis'
+      - "redis"
     build: .
     command: puma -p 28080 cable/config.ru
     ports:
-      - '28080:28080'
+      - "28080:28080"
     volumes:
-      - '.:/app'
+      - ".:/app"
     env_file:
-      - '.env'
+      - ".env"
+
+  bundle_cache:
+    image: busybox
+    volumes:
+      - bundle_cache:/bundle_cache
 
 volumes:
   redis:
   postgres:
+  bundle_cache:
