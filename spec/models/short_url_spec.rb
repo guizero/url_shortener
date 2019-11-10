@@ -41,6 +41,14 @@ RSpec.describe ShortUrl, type: :model do
     end
   end
 
+  describe 'callbacks' do
+    it 'after_save calls the fetch title job' do
+      ActiveJob::Base.queue_adapter = :test
+      short_url = described_class.create(long_url: 'https://bluecoding.com')
+      expect(FetchLongUrlTitleJob).to have_been_enqueued.with(short_url).on_queue('default')
+    end
+  end
+
   describe '.find_from_code' do
     let(:short_url) { ShortUrl.create(long_url: 'https://www.bluecoding.com') }
     let(:code) { ShortCode.encode(short_url.id) }
