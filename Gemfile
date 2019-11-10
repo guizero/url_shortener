@@ -10,6 +10,7 @@ gem 'redis', '~> 4.0'
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'sidekiq'
 gem 'uglifier'
+gem 'httparty'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
