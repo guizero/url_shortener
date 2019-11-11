@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ShortUrl < ApplicationRecord
+  has_many :visits, dependent: :destroy
+
   validates :long_url, presence: true, length: { in: 5..2000 }
   validate :long_url_must_be_valid
 
@@ -17,6 +19,10 @@ class ShortUrl < ApplicationRecord
 
   def short_code
     ShortCode.encode(id)
+  end
+
+  def register_new_visit(ip)
+    visits.create(ip: ip)
   end
 
   private

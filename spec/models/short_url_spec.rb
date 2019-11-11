@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe ShortUrl, type: :model do
   describe 'validations' do
+    it { should have_many(:visits).dependent(:destroy) }
     it { should validate_presence_of(:long_url) }
     it { should validate_length_of(:long_url).is_at_least(5).is_at_most(2000) }
 
@@ -77,6 +78,45 @@ RSpec.describe ShortUrl, type: :model do
         .once
 
       subject
+    end
+  end
+
+  describe '#register_new_visit' do
+    let!(:short_url) { described_class.create(long_url: 'https://www.google.com') }
+
+    subject { short_url.register_new_visit(ip_address) }
+
+    it 'has no visit' do
+      expect(short_url.visits_count).to eq 0
+    end
+
+    context 'when the visitor ip is nil' do
+      let(:ip_address) { nil }
+
+      it 'does not register the visit' do
+        expect { subject }.not_to change { short_url.visits_count }
+      end
+    end
+
+    context 'when the visitor ip is blank' do
+      let(:ip_address) { '' }
+
+      it 'does not register the visit' do
+        expect { subject }.not_to change { short_url.visits_count }
+      end
+    end
+
+    context 'when there a register_new_visit is called' do
+      let(:ip_address) { '1.2.3.4' }
+
+      it 'counts the visit' do
+        expect { subject }.to change { short_url.visits_count }.from(0).to(1)
+      end
+
+      it 'does not count the visit from same ip twice' do
+        expect { subject }.to change { short_url.visits_count }.from(0).to(1)
+        expect { subject }.not_to change { short_url.visits_count }
+      end
     end
   end
 end

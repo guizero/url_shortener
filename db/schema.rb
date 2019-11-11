@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_10_201257) do
+ActiveRecord::Schema.define(version: 2019_11_11_204827) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,16 @@ ActiveRecord::Schema.define(version: 2019_11_10_201257) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "title"
+    t.integer "visits_count", default: 0
+  end
+
+  create_table "visits", force: :cascade do |t|
+    t.bigint "short_url_id"
+    t.string "ip", limit: 15, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["short_url_id", "ip"], name: "index_visits_on_short_url_id_and_ip", unique: true
+    t.index ["short_url_id"], name: "index_visits_on_short_url_id"
   end
 
 end
