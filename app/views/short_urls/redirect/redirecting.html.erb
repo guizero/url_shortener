@@ -1,10 +1,1 @@
-You are being redirected to <b><%= @short_url.long_url %></b> in 5 seconds!
-<script type="text/javascript">
-    // Your application has indicated there's an error
-  window.setTimeout(function(){
-
-      // Move to a new location or you can do something else
-      window.location.href = "<%= @short_url.long_url %>";
-
-  }, 5000);
-</script>
+<%= react_component("Redirect", { url: @short_url.long_url }) %>
