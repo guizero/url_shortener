@@ -9,9 +9,10 @@ RSpec.describe ShortUrls::RedirectController, type: :controller do
     subject { get :call, params: { short_code: short_url.short_code } }
 
     context 'given a valid short code' do
-      it 'redirects to target url' do
+      it 'redirects to target url and registers visit' do
         subject
         expect(response).to have_http_status(:ok)
+        expect(short_url.reload.visits_count).to eq 1
       end
     end
 

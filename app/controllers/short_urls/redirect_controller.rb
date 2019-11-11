@@ -5,6 +5,7 @@ class ShortUrls::RedirectController < ApplicationController
     @short_url = short_url_from_code
 
     if @short_url
+      @short_url.register_new_visit(request.remote_ip)
       render 'redirecting'
     else
       render plain: error_message, status: :bad_request
