@@ -6,7 +6,7 @@ class ShortUrl < ApplicationRecord
   validates :long_url, presence: true, length: { in: 5..2000 }
   validate :long_url_must_be_valid
 
-  after_save :assign_short_code, :schedule_title_fetching,
+  after_save :assign_short_code_and_enqueue_job,
              if: proc { |short_url| short_url.saved_change_to_long_url? }
 
   class << self
@@ -23,8 +23,10 @@ class ShortUrl < ApplicationRecord
 
   private
 
-  def assign_short_code
+  def assign_short_code_and_enqueue_job
     update(short_code: ShortCode.encode(id))
+
+    FetchLongUrlTitleJob.perform_later(self)
   end
 
   def long_url_must_be_valid
@@ -35,9 +37,5 @@ class ShortUrl < ApplicationRecord
 
   def valid_uri_regexp
     URI::DEFAULT_PARSER.make_regexp(%w[http https])
-  end
-
-  def schedule_title_fetching
-    FetchLongUrlTitleJob.perform_later(self)
   end
 end
