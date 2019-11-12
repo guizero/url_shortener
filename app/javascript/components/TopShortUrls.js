@@ -1,55 +1,102 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import ActionCable from "actioncable";
 import {
   ActionCableProvider,
   ActionCableConsumer
 } from "react-actioncable-provider";
+import { makeStyles } from "@material-ui/core/styles";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import Container from "@material-ui/core/Container";
+import Linkify from "react-linkify";
+import Typography from "@material-ui/core/Typography";
 
-class TopShortUrls extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      currentShortUrls: props.short_urls
-    };
+const useStyles = makeStyles({
+  root: {
+    width: "100%",
+    overflowX: "auto"
+  },
+  table: {
+    minWidth: 650
   }
+});
 
-  handleReceived = updatedShortUrls => {
-    this.setState({
-      currentShortUrls: updatedShortUrls
-    });
+function TopShortUrls(props) {
+  const [shortUrls, setShortUrls] = useState(props.short_urls);
+
+  const handleReceived = updatedShortUrls => {
+    setShortUrls(updatedShortUrls);
   };
 
-  render() {
-    const { currentShortUrls } = this.state;
+  if (!shortUrls) return <p>No short links have yet been created.</p>;
 
-    if (!currentShortUrls) return <p>empty</p>;
+  const classes = useStyles();
 
-    const cable = ActionCable.createConsumer(
-      `ws://${window.location.host}/cable`
-    );
+  const cable = ActionCable.createConsumer(
+    `ws://${window.location.host}/cable`
+  );
 
-    const top_urls = currentShortUrls.map((short_url, index) => (
-      <li key={index}>
-        {short_url.title} - Visits: {short_url.visits_count}
-      </li>
-    ));
-
-    return (
-      <ActionCableProvider cable={cable}>
-        <ActionCableConsumer
-          channel="TopShortUrlsChannel"
-          onReceived={this.handleReceived}
-        >
-          {top_urls}
-        </ActionCableConsumer>
-      </ActionCableProvider>
-    );
-  }
+  return (
+    <ActionCableProvider cable={cable}>
+      <ActionCableConsumer
+        channel="TopShortUrlsChannel"
+        onReceived={handleReceived}
+      >
+        <Container component="main" maxWidth="lg">
+          <Typography variant="h4" gutterBottom>
+            Top 100 short urls ranked by visits!
+          </Typography>
+          <br />
+          <br />
+          <Paper className={classes.root}>
+            <Table className={classes.table} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    <b>Ranking</b>
+                  </TableCell>
+                  <TableCell align="right">
+                    <b>Title</b>
+                  </TableCell>
+                  <TableCell align="right">Short Url</TableCell>
+                  <TableCell align="right">Long Url</TableCell>
+                  <TableCell align="right">Visits</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {shortUrls.map((shortUrl, index) => (
+                  <TableRow key={index + 1}>
+                    <TableCell component="th" scope="row">
+                      {index + 1}
+                    </TableCell>
+                    <TableCell align="right">
+                      {shortUrl.title || "Title has still not been fetched!"}
+                    </TableCell>
+                    <TableCell align="right">{`${window.location.origin}/${shortUrl.short_code}`}</TableCell>
+                    <TableCell align="right">
+                      <Linkify>{shortUrl.long_url}</Linkify>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Linkify>{shortUrl.visits_count}</Linkify>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Paper>
+        </Container>
+      </ActionCableConsumer>
+    </ActionCableProvider>
+  );
 }
 
 TopShortUrls.propTypes = {
   short_urls: PropTypes.array
 };
+
 export default TopShortUrls;
