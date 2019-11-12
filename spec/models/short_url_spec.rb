@@ -48,6 +48,24 @@ RSpec.describe ShortUrl, type: :model do
       short_url = described_class.create(long_url: 'https://bluecoding.com')
       expect(FetchLongUrlTitleJob).to have_been_enqueued.with(short_url).on_queue('default')
     end
+
+    context 'assign_short_code' do
+      let(:long_url) { 'https://www.bluecoding.com' }
+
+      subject { described_class.create(long_url: long_url) }
+
+      it 'calls the short url utils' do
+        expect(ShortCode)
+          .to receive(:encode)
+          .once
+
+        subject
+      end
+
+      it 'saves the short_code' do
+        expect(subject.short_code).not_to be_nil
+      end
+    end
   end
 
   describe '.find_from_code' do
@@ -62,22 +80,6 @@ RSpec.describe ShortUrl, type: :model do
       before { allow(ShortCode).to receive(:valid?).and_return(false) }
 
       it { is_expected.to be_nil }
-    end
-  end
-
-  describe '#short_id' do
-    let(:long_url) { 'https://www.bluecoding.com' }
-    let(:short_url) { described_class.create(long_url: long_url) }
-
-    subject { short_url.short_id }
-
-    it 'calls the short url utils' do
-      expect(ShortCode)
-        .to receive(:encode)
-        .with(short_url.id)
-        .once
-
-      subject
     end
   end
 

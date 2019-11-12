@@ -6,7 +6,7 @@ class ShortUrl < ApplicationRecord
   validates :long_url, presence: true, length: { in: 5..2000 }
   validate :long_url_must_be_valid
 
-  after_save :schedule_title_fetching,
+  after_save :assign_short_code, :schedule_title_fetching,
              if: proc { |short_url| short_url.saved_change_to_long_url? }
 
   class << self
@@ -17,15 +17,15 @@ class ShortUrl < ApplicationRecord
     end
   end
 
-  def short_code
-    ShortCode.encode(id)
-  end
-
   def register_new_visit(ip)
     visits.create(ip: ip)
   end
 
   private
+
+  def assign_short_code
+    update(short_code: ShortCode.encode(id))
+  end
 
   def long_url_must_be_valid
     return if long_url&.match?(valid_uri_regexp)
