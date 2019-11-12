@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import LoadingScreen from "react-loading-screen";
 
 class Redirect extends React.Component {
   componentDidMount() {
@@ -14,11 +15,13 @@ class Redirect extends React.Component {
     const { url } = this.props;
 
     return (
-      <React.Fragment>
-        You are being redirected to
-        <b> {url} </b>
-        in 5 seconds!
-      </React.Fragment>
+      <LoadingScreen
+        loading={true}
+        bgColor="#f1f1f1"
+        spinnerColor="#9ee5f8"
+        textColor="#676767"
+        text={`You are being redirected to ${url}`}
+      />
     );
   }
 }
