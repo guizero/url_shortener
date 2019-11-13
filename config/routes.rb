@@ -8,5 +8,6 @@ Rails.application.routes.draw do
     post '/',            controller: 'generator'
     get  '/top-urls',    controller: 'top_short_urls'
     get  '/:short_code', controller: 'redirect'
+    post '/generate',    controller: 'generate_random'
   end
 end

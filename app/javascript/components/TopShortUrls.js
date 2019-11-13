@@ -15,6 +15,9 @@ import Paper from "@material-ui/core/Paper";
 import Container from "@material-ui/core/Container";
 import Linkify from "react-linkify";
 import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import axios from "axios";
 
 const useStyles = makeStyles({
   root: {
@@ -28,9 +31,24 @@ const useStyles = makeStyles({
 
 function TopShortUrls(props) {
   const [shortUrls, setShortUrls] = useState(props.short_urls);
+  const [loadingShortUrls, setLoadingShortUrls] = useState(false);
 
   const handleReceived = updatedShortUrls => {
     setShortUrls(updatedShortUrls);
+  };
+
+  const generateRandom = event => {
+    setLoadingShortUrls(true);
+
+    event.preventDefault();
+    axios
+      .post("/generate", {})
+      .then(response => {
+        setLoadingShortUrls(false);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   if (!shortUrls) return <p>No short links have yet been created.</p>;
@@ -89,6 +107,17 @@ function TopShortUrls(props) {
               </TableBody>
             </Table>
           </Paper>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={generateRandom}
+            disabled={loadingShortUrls}
+            endIcon={loadingShortUrls && <CircularProgress />}
+          >
+            Generate random short urls!
+          </Button>
         </Container>
       </ActionCableConsumer>
     </ActionCableProvider>
