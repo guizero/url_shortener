@@ -11,7 +11,7 @@ class FetchUrlsFromSearchService
       'https://www.google.com',
       'http://lets.events',
       'http://www.xerpa.com.br',
-      'http://www.globo.com',
+      'http://www.bluecoding.com',
       'http://www.rockcontent.com'
     ]*5
   end

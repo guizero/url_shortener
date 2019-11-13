@@ -13,6 +13,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import Confetti from "react-dom-confetti";
 
 const useStyles = makeStyles(theme => ({
   "@global": {
@@ -42,7 +43,7 @@ const useStyles = makeStyles(theme => ({
 const Create = () => {
   const [longUrl, setLongUrl] = useState("http://");
   const [shortCode, setShortCode] = useState(null);
-  const [openDialog, setOpenDialog] = React.useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const handleChange = event => {
     setLongUrl(event.target.value);
@@ -105,6 +106,8 @@ const Create = () => {
             Shorten
           </Button>
         </form>
+        <a href="/top-urls">Check the top 100 short urls!</a>
+        <Confetti active={openDialog} />
       </div>
       <Dialog
         open={openDialog}
