@@ -56,7 +56,9 @@ function TopShortUrls(props) {
   const classes = useStyles();
 
   const cable = ActionCable.createConsumer(
-    `ws://${window.location.host}/cable`
+    `${process.env.NODE_ENV == "production" ? "wss" : "ws"}://${
+      window.location.host
+    }/cable`
   );
 
   return (
