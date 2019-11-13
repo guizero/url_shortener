@@ -16,6 +16,7 @@ Clone the repository and run:
 ```bash
 $ docker-compose build
 $ docker-compose run --rm website bundle install
+$ docker-compose run --rm website yarn install
 $ docker-compose run --rm website bundle exec rails db:create db:migrate
 $ docker-compose up
 ```
