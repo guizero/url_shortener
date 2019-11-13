@@ -15,8 +15,13 @@ Clone the repository and run:
 
 ```bash
 $ docker-compose build
+$ docker-compose run --rm website bundle install
+$ docker-compose run --rm website bundle exec rails db:create db:migrate
 $ docker-compose up
 ```
+
+Then, visit: http://localhost:3000
+A demo version can be visited on: [http://ashorturl.herokuapp.com](http://ashorturl.herokuapp.com/)
 
 ## Short Code Logic
 
